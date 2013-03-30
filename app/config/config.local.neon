@@ -1,0 +1,15 @@
+parameters:
+
+nette:
+
+services:
+
+factories:
+
+
+dibi:
+	host: 127.0.0.1
+	username: root
+	password:
+	database: pastenotes
+	lazy: TRUE
