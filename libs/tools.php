@@ -6,3 +6,7 @@
  * Time: 5:02 PM
  * To change this template use File | Settings | File Templates.
  */
+
+function debug($object) {
+    \Nette\Diagnostics\Debugger::barDump($object);
+}
