@@ -1,0 +1,90 @@
+{block content}
+	<div class="row-fluid">
+		<div class="span2 parser">
+			{control parser}
+		</div>
+		<div class="span10">
+
+			<ul class="nav nav-tabs" id="switch">
+				<li class="active"><a href="#active">Active tasks</a></li>
+				<li><a href="#done">Done tasks</a></li>
+			</ul>
+
+			<div class="tab-content">
+					<div class="tab-pane active" id="active">
+						{snippet active}
+							{if $active_tasks}
+								{foreach $active_tasks as $item}
+									<div class="item" ref="{$item->id}">
+										<i class="icon-reorder"></i>
+										{$item->text}
+										<input class="check" type="checkbox">
+									</div>
+								{/foreach}
+							{/if}
+						{/snippet}
+					</div>
+
+					<div class="tab-pane" id="done">
+						{snippet done}
+							{if $done_tasks}
+								{foreach $done_tasks as $item}
+									<div class="item" ref="{$item->id}">
+										<i class="icon-reorder"></i>
+										{$item->text}
+										<input class="check" type="checkbox" checked="checked">
+									</div>
+								{/foreach}
+							{/if}
+						{/snippet}
+					</div>
+			</div>
+		</div>
+	</div>
+{/block}
+
+{block scripts}
+{include #parent}
+	<script type="text/javascript" n:syntax="double">
+		$(document).ready(function(){
+			$('.parser form').keyup(function(e){
+				if(parseInt(e.keyCode) == 13) {
+					submitFormAndClear($(this));
+				}
+			});
+
+			$("#active .check").live('click', function(e){
+				e.preventDefault();
+
+				$.ajax({
+					url: {{link changeToDone!}},
+					data: {
+						note_id: $(this).parents('.item').attr('ref')
+					}
+				});
+			});
+
+			$("#done .check").live('click', function(e){
+				e.preventDefault();
+
+				$.ajax({
+					url: {{link changeToActive!}},
+					data: {
+						note_id: $(this).parents('.item').attr('ref')
+					}
+				});
+			});
+		});
+
+		function submitFormAndClear(form) {
+			form.submit();
+			$('input, textarea').val('');
+		}
+	</script>
+{/block}
+
+
+{block head}
+{include #parent}
+
+{/block}

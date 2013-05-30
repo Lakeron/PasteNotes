@@ -1,37 +1,63 @@
 {**
- * My Application layout template.
+ * PasteNotes Application
  *
- * @param string   $basePath web base path
- * @param string   $robots   tell robots how to index the content of a page (optional)
- * @param array    $flashes  flash messages
+ * @author: Andrej Baran
+ *
  *}
 
 <!DOCTYPE html>
 <html>
 <head>
+
+	<title>{block title|striptags|upper}Paste Notes{/block}</title>
+
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
+	<meta name="author" content="">
 	<meta name="robots" content="{$robots}" n:ifset="$robots">
 
-	<title>{block title|striptags|upper}Nette Application Skeleton{/block}</title>
-
+	<link rel="stylesheet" href="{$basePath}/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="{$basePath}/bootstrap/css/responsive.css"/>
+	<link rel="stylesheet" href="{$basePath}/font-awesome/css/font-awesome.min.css"/>
 	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css">
 	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css">
 	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-	{block head}{/block}
+	{block head}
+
+	{/block}
 </head>
 
 <body>
 	<script> document.body.className+=' js' </script>
 
-	<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+	<div id="wrap">
+		<div class="container-fluid">
+			<div class="page-header">
+				<h1>Paste, send, do it</h1>
+			</div>
 
-	{include #content}
+			{include #content}
+		</div>
+
+		<div id="push"></div>
+	</div>
+
+	<div id="footer">
+		<div class="container" style="position: relative;">
+			<p class="muted credit">Made with love of <a href="http://nette.org/en/">Nette</a> by <a href="https://twitter.com/AndrejBaran">@AndrejBaran</a>.</p>
+			<a href="mailto:lakeron@gmail.com?subject=PasteNotes comments" class="btn btn-success" style="position: absolute; top: 16px; right: 0;">Send feedback</a>
+		</div>
+	</div>
 
 	{block scripts}
-	<script src="{$basePath}/js/jquery.js"></script>
-	<script src="{$basePath}/js/netteForms.js"></script>
-	<script src="{$basePath}/js/main.js"></script>
+		<script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
+		<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
+		<script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+		<script type="text/javascript" src="{$basePath}/js/jquery.livequery.js"></script>
+		<script type="text/javascript" src="{$basePath}/bootstrap/js/bootstrap.js"></script>
+		<script type="text/javascript" src="{$basePath}/bootstrap/js/html5shiv.js"></script>
+		<script type="text/javascript" src="{$basePath}/js/main.js"></script>
 	{/block}
 </body>
 </html>

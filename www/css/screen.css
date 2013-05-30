@@ -44,3 +44,100 @@ form .error {
 	color: #D00;
 	font-weight: bold;
 }
+
+
+
+/* BOOTSTRAP */
+/* Sticky footer styles
+      -------------------------------------------------- */
+
+html,
+body {
+    height: 100%;
+    /* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    /* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+#footer {
+    height: 60px;
+}
+#footer {
+    background-color: #f5f5f5;
+}
+
+/* Lastly, apply responsive CSS fixes as necessary */
+@media (max-width: 767px) {
+    #footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+.container {
+    width: auto;
+    max-width: 680px;
+}
+.container .credit {
+    margin: 20px 0;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+    margin-top: 4px;
+}
+
+#switch {
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+.tab-content {
+    border: 1px solid #DDDDDD;
+    padding: 10px;
+    border-radius: 0px 4px 4px 4px;
+}
+
+.item {
+    border-top: 1px solid #E6E8E9;
+    color: #333333;
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 25px 7px 7px;
+    position: relative;
+    font-weight: normal;
+}
+
+.item:first-child {
+    border-top: 0 none;
+}
+
+.icon-reorder {
+    color: #D9E4EE;
+    font-size: 18px;
+    margin-right: 13px;
+}
+
+.check {
+    right: 0px;
+    position: absolute;
+    top: 7px;
+}

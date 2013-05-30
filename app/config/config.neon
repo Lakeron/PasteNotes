@@ -35,6 +35,7 @@ common:
 		authenticator: Authenticator
 		routerFactory: RouterFactory
 		router: @routerFactory::createRouter
+		model: Model\BaseModel(@dibi.connection)
 
 
 	factories:
