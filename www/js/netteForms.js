@@ -136,7 +136,7 @@ Nette.addError = function(elem, message) {
 		elem.focus();
 	}
 	if (message) {
-		alert(message);
+//		console.log(message);
 	}
 };
 

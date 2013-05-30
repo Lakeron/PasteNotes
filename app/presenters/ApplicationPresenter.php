@@ -11,13 +11,35 @@ class ApplicationPresenter extends BasePresenter {
         if(!$this->code) {
             $this->code = md5($_SERVER['SERVER_ADDR'] . time());
         }
-
-        debug($this);
     }
 
     public function renderDefault() {
-        $this->template->active_tasks = $this->context->model->getNotes($this->code, 1);
-        $this->template->done_tasks = $this->context->model->getNotes($this->code, 2);
+        $defaultPools = $this->context->model->getDefaultPools($this->code);
+        foreach($defaultPools as $key => &$pool) {
+            $pool['webalized_name'] = \Nette\Utils\Strings::webalize($pool->name).$pool->id;
+            $pool['tasks'] = $this->context->model->getTasks($this->code, $pool->id);
+
+            if($pool->isActive == 1)
+            {
+                $this->template->active = $pool;
+            } elseif($pool->isDeleted == 1)
+            {
+                $this->template->deleted = $pool;
+                unset($defaultPools[$key]);
+            } elseif($pool->isDone == 1)
+            {
+                $this->template->done = $pool;
+            }
+
+        }
+        $this->template->defaultPools = $defaultPools;
+
+        $userPools = $this->context->model->getUserPools($this->code);
+        foreach($userPools as $key => &$pool) {
+            $pool['webalized_name'] = \Nette\Utils\Strings::webalize($pool->name).$pool->id;
+            $pool['tasks'] = $this->context->model->getTasks($this->code, $pool->id);
+        }
+        $this->template->userPools = $userPools;
     }
 
     protected function createComponentParser(){
@@ -28,7 +50,7 @@ class ApplicationPresenter extends BasePresenter {
             ->addRule(\Nette\Forms\Form::FILLED, 'Please fill out ToDo list.')
             ->getControlPrototype()->addAttributes(array('class' => 'span12'))
             ->setAttribute('onchange', 'submit()')
-            ->setPlaceholder('Paste notes here');
+            ->setPlaceholder('Press Enter to add task');
 
 //        $form->addSubmit('save', 'Create');
 
@@ -46,27 +68,23 @@ class ApplicationPresenter extends BasePresenter {
                     unset($data[$key]);
                 }
             }
-
-            $this->invalidateControl('active');
-            $this->context->model->saveNote($this->code, $data);
+            $note = $this->context->model->getActive($this->code);
+            $this->invalidateControl('defaultPools');
+            $this->invalidateControl('userPools');
+            $this->invalidateControl('script');
+            $this->context->model->saveNote($note->id, $note->pool_id, $data);
         }
     }
 
-    public function handleChangeToActive($note_id) {
-        $this->context->model->changeStatus($note_id, 1);
-        $this->invalidateControl('active');
-        $this->invalidateControl('done');
+    public function handleChangePool($task_id, $pool_id, $position = null) {
+        $this->context->model->changePool($task_id, $pool_id, $position);
+        $this->invalidateControl('defaultPools');
+        $this->invalidateControl('userPools');
     }
 
-    public function handleChangeToDone($note_id) {
-        $this->context->model->changeStatus($note_id, 2);
-        $this->invalidateControl('active');
-        $this->invalidateControl('done');
-    }
-
-    public function handleChangeToDelete($note_id) {
-        $this->context->model->changeStatus($note_id, 3);
-        $this->invalidateControl('active');
-        $this->invalidateControl('done');
+    public function handleAddNewPool()
+    {
+        $this->context->model->addPool($this->code);
+        $this->invalidateControl('all');
     }
 }

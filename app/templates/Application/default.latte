@@ -1,90 +1,158 @@
 {block content}
 	<div class="row-fluid">
 		<div class="span2 parser">
-			{control parser}
+            <div class="span12">
+                {control parser}
+            </div>
 		</div>
 		<div class="span10">
+            <div class="row-fluid text-center">
+                <div class="btn-group" style="padding-bottom: 6px;">
+                    <a href="{link addNewPool!}" class="ajax edit btn btn-success btn-small"><i class="icon-plus"></i> Add new pool</a>
+                    <a href="#" class="edit btn btn-small"><i class="icon-cog"></i> Manage pools</a>
+                </div>
+            </div>
 
-			<ul class="nav nav-tabs" id="switch">
-				<li class="active"><a href="#active">Active tasks</a></li>
-				<li><a href="#done">Done tasks</a></li>
-			</ul>
+            <div class="row-fluid">
+                {snippet all}
+                    <div class="{if count($userPools) == 0}span12{else}span6{/if}">
+                        <ul class="nav nav-tabs" id="left-tab">
+                            {foreach $defaultPools as $pool}
+                                <li><a href="#{$pool->webalized_name}">{$pool->name}</a></li>
+                            {/foreach}
+                        </ul>
 
-			<div class="tab-content">
-					<div class="tab-pane active" id="active">
-						{snippet active}
-							{if $active_tasks}
-								{foreach $active_tasks as $item}
-									<div class="item" ref="{$item->id}">
-										<i class="icon-reorder"></i>
-										{$item->text}
-										<input class="check" type="checkbox">
-									</div>
-								{/foreach}
-							{/if}
-						{/snippet}
-					</div>
+                        <div class="tab-content">
+                            {snippet defaultPools}
+                                {foreach $defaultPools as $pool}
+                                    <div class="tab-pane" id="{$pool->webalized_name}">
+                                        {snippet pool-$pool->id}
+                                            <div class="sortable" data-pool-id="{$pool->id}">
+                                                {if $pool->tasks}
+                                                    {foreach $pool->tasks as $task}
+                                                        <div class="item" data-task-id="{$task->id}">
+                                                            {if $pool->isDone == 1}
+                                                                <input class="check change leftbtn" checked="checked" type="checkbox" data-pool-id="{$active->id}">
+                                                            {else}
+                                                                <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
+                                                            {/if}
+                                                            {$task->text}
+                                                            <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
+                                                        </div>
+                                                    {/foreach}
+                                                {/if}
+                                            </div>
+                                        {/snippet}
+                                    </div>
+                                {/foreach}
+                            {/snippet}
+                        </div>
+                        <script type="text/javascript" n:syntax="double">
+                            $(document).ready(function()
+                            {
+                                $('#left-tab a:last').tab('show');
+                                $('#left-tab a').click(function (e) {
+                                    e.preventDefault();
+                                    $(this).tab('show');
+                                });
+                            });
+                        </script>
+                    </div>
+                    {if count($userPools) > 0}
+                        <div class="span6">
+                            <ul class="nav nav-tabs" id="right-tab">
+                                {foreach $userPools as $pool}
+                                    <li><a href="#{$pool->webalized_name}">{$pool->name}</a></li>
+                                {/foreach}
+                            </ul>
 
-					<div class="tab-pane" id="done">
-						{snippet done}
-							{if $done_tasks}
-								{foreach $done_tasks as $item}
-									<div class="item" ref="{$item->id}">
-										<i class="icon-reorder"></i>
-										{$item->text}
-										<input class="check" type="checkbox" checked="checked">
-									</div>
-								{/foreach}
-							{/if}
-						{/snippet}
-					</div>
-			</div>
+                            <div class="tab-content">
+                                {snippet userPools}
+                                    {foreach $userPools as $pool}
+                                        <div class="tab-pane" id="{$pool->webalized_name}">
+                                            {snippet pool-$pool->id}
+                                                <div class="sortable" data-pool-id="{$pool->id}">
+                                                    {if $pool->tasks}
+                                                        {foreach $pool->tasks as $task}
+                                                            <div class="item" data-task-id="{$task->id}">
+                                                                {if $pool->isDone == 1}
+                                                                    <input class="check change leftbtn" checked="checked" type="checkbox" data-pool-id="{$active->id}">
+                                                                {else}
+                                                                    <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
+                                                                {/if}
+                                                                {$task->text}
+                                                                <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
+                                                            </div>
+                                                        {/foreach}
+                                                    {/if}
+                                                </div>
+                                            {/snippet}
+                                        </div>
+                                    {/foreach}
+                                {/snippet}
+                            </div>
+                            <script type="text/javascript" n:syntax="double">
+                                $(document).ready(function()
+                                {
+                                    $('#right-tab a:last').tab('show');
+                                    $('#right-tab a').click(function (e) {
+                                        e.preventDefault();
+                                        $(this).tab('show');
+                                    });
+                                });
+                            </script>
+                        </div>
+                    {/if}
+                </div>
+            {/snippet}
 		</div>
 	</div>
-{/block}
+    {snippet script}
+        <script type="text/javascript" n:syntax="double">
+            $(document).ready(function()
+            {
+                activeSortable( ".sortable" );
 
-{block scripts}
-{include #parent}
-	<script type="text/javascript" n:syntax="double">
-		$(document).ready(function(){
-			$('.parser form').keyup(function(e){
-				if(parseInt(e.keyCode) == 13) {
-					submitFormAndClear($(this));
-				}
-			});
+                $('.parser form').keyup(function(e){
+                    if(parseInt(e.keyCode) == 13) {
+                        submitFormAndClear($(this));
+                    }
+                });
 
-			$("#active .check").live('click', function(e){
-				e.preventDefault();
+                $("body").on('click', '.change', function(e){
+                    e.preventDefault();
+                    changePool( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
+                });
+            });
 
-				$.ajax({
-					url: {{link changeToDone!}},
-					data: {
-						note_id: $(this).parents('.item').attr('ref')
-					}
-				});
-			});
+            function submitFormAndClear(form) {
+                form.submit();
+                $('input, textarea').val('');
+            }
 
-			$("#done .check").live('click', function(e){
-				e.preventDefault();
+            function changePool(task_id, pool_id, position) {
+                $.ajax({
+                    url: {{link changePool!}},
+                    data: {
+                        task_id: task_id,
+                        pool_id: pool_id,
+                        position: position
+                    },
+                    complete: function() {
+                        activeSortable( ".sortable" );
+                    }
+                });
+            }
 
-				$.ajax({
-					url: {{link changeToActive!}},
-					data: {
-						note_id: $(this).parents('.item').attr('ref')
-					}
-				});
-			});
-		});
-
-		function submitFormAndClear(form) {
-			form.submit();
-			$('input, textarea').val('');
-		}
-	</script>
-{/block}
-
-
-{block head}
-{include #parent}
-
+            function activeSortable(element)
+            {
+                $( element ).sortable({
+                    connectWith: element,
+                    stop: function( event, ui ) {
+                        changePool( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
+                    }
+                }).disableSelection();
+            }
+        </script>
+    {/snippet}
 {/block}
