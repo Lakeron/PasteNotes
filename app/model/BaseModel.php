@@ -54,7 +54,8 @@ class BaseModel extends Object {
 
             $this->db->insert('pools', array(
                 'note_id' => $note_id,
-                'name' => 'Active pool'
+                'name' => 'Active pool',
+                'isActive' => 1
             ))->execute();
 
             $this->db->insert('pools', array(

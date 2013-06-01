@@ -48,8 +48,7 @@ class ApplicationPresenter extends BasePresenter {
 
         $form->addTextArea('text', '', 45, 2)
             ->addRule(\Nette\Forms\Form::FILLED, 'Please fill out ToDo list.')
-            ->getControlPrototype()->addAttributes(array('class' => 'span12'))
-            ->setAttribute('onchange', 'submit()')
+            ->getControlPrototype()->addAttributes(array('class' => 'span12', 'style' => 'max-width: 100%'))
             ->setPlaceholder('Press Enter to add task');
 
 //        $form->addSubmit('save', 'Create');
@@ -86,5 +85,11 @@ class ApplicationPresenter extends BasePresenter {
     {
         $this->context->model->addPool($this->code);
         $this->invalidateControl('all');
+    }
+
+    public function handleAutoCheck()
+    {
+        $this->invalidateControl('defaultPools');
+        $this->invalidateControl('userPools');
     }
 }

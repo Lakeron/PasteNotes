@@ -109,6 +109,7 @@
 	</div>
     {snippet script}
         <script type="text/javascript" n:syntax="double">
+            var isDragging = false;
             $(document).ready(function()
             {
                 activeSortable( ".sortable" );
@@ -123,6 +124,8 @@
                     e.preventDefault();
                     changePool( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
                 });
+
+                autoCheck();
             });
 
             function submitFormAndClear(form) {
@@ -148,10 +151,31 @@
             {
                 $( element ).sortable({
                     connectWith: element,
+                    start: function(){
+                        isDragging = true;
+                    },
                     stop: function( event, ui ) {
+                        isDragging = false;
                         changePool( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
                     }
                 }).disableSelection();
+            }
+
+            function autoCheck() {
+
+                setTimeout(function()
+                {
+                    autoCheck();
+                    if(!isDragging)
+                    {
+                        $.ajax({
+                            url: {{link autoCheck!}},
+                            complete: function() {
+                                activeSortable( ".sortable" );
+                            }
+                        });
+                    }
+                }, 1000);
             }
         </script>
     {/snippet}
