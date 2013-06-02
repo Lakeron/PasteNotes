@@ -185,6 +185,7 @@
                     var pool_name = $('.editPoolName input[name="name"]').val();
 
                     $('.poolName'+pool_id).text(pool_name);
+                    $('.poolHolder'+pool_id).attr('data-name', pool_name);
 
                     $.ajax({
                         url: {{link updatePool!}},
