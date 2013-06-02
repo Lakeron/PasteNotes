@@ -85,6 +85,17 @@ body {
     }
 }
 
+@media (max-width: 480px) {
+
+    #footer {
+        height: 100px;
+        margin-top: 20px;
+    }
+
+    #right-tab {
+        margin-top: 10px;
+    }
+}
 
 
 /* Custom page CSS

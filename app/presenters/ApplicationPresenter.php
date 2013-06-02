@@ -77,7 +77,7 @@ class ApplicationPresenter extends BasePresenter {
     }
 
     public function handleChangeTask($task_id, $pool_id, $position = null) {
-        $this->context->model->changeTask($task_id, $pool_id, $position);
+        $this->context->model->changeTask($task_id, $pool_id, $position, $this->code);
         $this->invalidateControl('defaultPools');
         $this->invalidateControl('userPools');
     }

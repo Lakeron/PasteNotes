@@ -18,7 +18,6 @@ class BaseModel extends Object {
 
     public function __construct($db) {
         $this->db = $db;
-        debug($this->db);
     }
 
     public function getActive($code)
@@ -29,7 +28,7 @@ class BaseModel extends Object {
     public function addPool($code) {
         $note = $this->db->select('*')->from('notes')->where('code = %s', $code)->fetch();
         if($note) {
-            $this->reorderPools($note->id, 1);
+            $this->reorderPools($note->id, 1, 1000000000);
             $this->db->insert('pools', array(
                 'note_id' => $note->id,
                 'name' => 'New pool',
@@ -47,7 +46,7 @@ class BaseModel extends Object {
                      ->where('p.id = %i AND n.code = %s', $pool_id, $code)->fetch();
         if($pool) {
             if(isset($data['position'])) {
-                $this->reorderPools($pool->note_id, $data['position']);
+                $this->reorderPools($pool->note_id, $data['position'], $pool->position);
             }
             return $this->db->update('pools', $data)
                 ->where('id = %i', $pool->id)
@@ -63,23 +62,30 @@ class BaseModel extends Object {
                      ->leftJoin('notes n')->on('p.note_id = n.id')
                      ->where('p.id = %i AND n.code = %s', $pool_id, $code)->fetch();
         if($pool) {
-            return debug($this->db->delete('pools')->where('id = %i', $pool->id)->execute());
+            return $this->db->delete('pools')->where('id = %i', $pool->id)->execute();
         } else {
             return false;
         }
     }
 
-    public function reorderPools($note_id, $position = 0) {
-        $this->db->query('SET @position = %i', $position);
-        $this->db->query('
-            UPDATE pools t
-            JOIN (SELECT @position := @position + 1 AS new_position, id FROM pools WHERE note_id = %i AND position >= %i  ORDER BY position ASC) t2 ON t2.id = t.id
-            SET t.position = t2.new_position WHERE t.note_id = %i',
-            $note_id,
-            $position,
-            $note_id
-        );
-
+    public function reorderPools($note_id, $position, $old_position) {
+        if($position > $old_position) {
+            $this->db->query('UPDATE pools
+                SET position = position - 1
+                WHERE note_id = %i AND position BETWEEN %i AND %i',
+                    $note_id,
+                    $old_position,
+                    $position
+            );
+        } else {
+            $this->db->query('UPDATE pools
+                SET position = position + 1
+                WHERE note_id = %i AND position BETWEEN %i AND %i',
+                    $note_id,
+                    $position,
+                    $old_position
+            );
+        }
     }
 
     public function getDefaultPools($code) {
@@ -99,7 +105,7 @@ class BaseModel extends Object {
 
             $this->db->insert('pools', array(
                 'note_id' => $note_id,
-                'name' => 'Active pool',
+                'name' => 'Activity pool',
                 'isActive' => 1
             ))->execute();
 
@@ -152,8 +158,7 @@ class BaseModel extends Object {
     }
 
     public function saveTask($note_id, $pool_id, array $tasks) {
-
-        $this->reorderTasks($pool_id, 1);
+        $this->reorderTasks($pool_id, 1, 1000000000);
         foreach($tasks as $key => $task) {
             $this->db->insert('tasks', array(
                 'note_id' => $note_id,
@@ -164,26 +169,49 @@ class BaseModel extends Object {
         }
     }
 
-    public function changeTask($task_id, $pool_id, $position = 0) {
-        $this->reorderTasks($pool_id, $position);
-        return $this->db->update('tasks', array(
+    public function changeTask($task_id, $pool_id, $position, $code)
+    {
+        $task = $this->db->select('t.*')
+            ->from('tasks t')
+            ->leftJoin('notes n')->on('t.note_id = n.id')
+            ->where('t.id = %i AND n.code = %s', $task_id, $code)->fetch();
+        if($task) {
+            // move in the same pool
+            if($pool_id == $task->pool_id) {
+                $this->reorderTasks($pool_id, $position, $task->position);
+                return $this->db->update('tasks', array(
+                    'pool_id' => $pool_id,
+                    'position' => $position
+                ))->where('id = %i', $task_id)->execute();
+            } else {
+                $this->reorderTasks($pool_id, $position, 1000000000);
+                return $this->db->update('tasks', array(
                             'pool_id' => $pool_id,
                             'position' => $position
-                        ))
-                        ->where('id = %i', $task_id)
-                        ->execute();
+                       ))->where('id = %i', $task_id)->execute();
+            }
+        } else {
+            false;
+        }
     }
 
-    public function reorderTasks($pool_id, $position = 0) {
-        $this->db->query('SET @position = %i', $position);
-        $this->db->query('
-            UPDATE tasks t
-            JOIN (SELECT @position := @position + 1 AS new_position, id FROM tasks WHERE pool_id = %i AND position >= %i  ORDER BY position ASC) t2 ON t2.id = t.id
-            SET t.position = t2.new_position WHERE t.pool_id = %i',
-            $pool_id,
-            $position,
-            $pool_id
-        );
-
+    public function reorderTasks($pool_id, $position, $old_position) {
+        if($position > $old_position) {
+            $this->db->query('UPDATE tasks
+                SET position = position - 1
+                WHERE pool_id = %i AND position BETWEEN %i AND %i',
+                    $pool_id,
+                    $old_position,
+                    $position
+            );
+        } else {
+            $this->db->query('UPDATE tasks
+                SET position = position + 1
+                WHERE pool_id = %i AND position BETWEEN %i AND %i',
+                    $pool_id,
+                    $position,
+                    $old_position
+            );
+        }
     }
 }

@@ -106,10 +106,10 @@
                                         </form>
                                     </div>
 
-                                    <ul class="unstyled row-fluid">
+                                    <ul class="unstyled sortablePools row-fluid">
                                         {foreach $userPools as $pool}
                                             <li class="row-fluid modal-item poolHolder{$pool->id}" data-name="{$pool->name}" data-pool-id="{$pool->id}">
-                                                <span class="span1 order">
+                                                <span class="span1 order hidden-phone">
                                                     <i class="icon-reorder"></i>
                                                 </span>
                                                 <span class="span9 text poolName{$pool->id}">
@@ -183,6 +183,9 @@
                     var form = $(this).parents('form');
                     var pool_id = $('.editPoolName input[name="pool_id"]').val();
                     var pool_name = $('.editPoolName input[name="name"]').val();
+
+                    $('.poolName'+pool_id).text(pool_name);
+
                     $.ajax({
                         url: {{link updatePool!}},
                         data: {
@@ -192,32 +195,32 @@
                             }
                         },
                         success: function(answer) {
-                            $('.poolName'+pool_id).text(pool_name);
+
                         }
                     });
-
                 });
 
                 $("body").on('click', '.deletePool', function(e){
                     var item = $(this).parents('.modal-item');
                     var pool_id = item.attr('data-pool-id');
+
+                    $('.poolHolder'+pool_id).remove();
+                    if($('#right-tab li.active').length == 0) {
+                        $('#right-tab a:last').tab('show');
+                    }
+                    if($('#right-tab li').length == 1) {
+                        $('.deletePool').remove();
+                    }
+
                     $.ajax({
                         url: {{link deletePool!}},
                         data: {
                             pool_id: pool_id
                         },
                         success: function(answer) {
-                            $('.poolHolder'+pool_id).remove();
-                            if($('#right-tab li.active').length == 0) {
-                                $('#right-tab a:last').tab('show');
-                            }
-                            if($('#right-tab li').length == 1) {
-                                $('.deletePool').remove();
-                            }
+
                         }
                     });
-
-
                 });
 
 
@@ -243,10 +246,10 @@
                 });
             }
 
-            function activeSortable(element)
+            function activeSortable()
             {
-                $( element ).sortable({
-                    connectWith: element,
+                $( '.sortable' ).sortable({
+                    connectWith: '.sortable',
                     start: function(){
                         isDragging = true;
                     },
@@ -255,6 +258,42 @@
                         changeTask( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
                     }
                 }).disableSelection();
+
+                $( '.sortablePools' ).sortable({
+                    connectWith: '.sortablePools',
+                    start: function(){
+                        isDragging = true;
+                    },
+                    stop: function( event, ui ) {
+                        isDragging = false;
+                        var pool_id = ui.item.attr('data-pool-id');
+                        var index = ui.item.index();
+                        var old_index = $('#right-tab .poolHolder'+pool_id).index();
+
+                        if(index < old_index) {
+                            console.log('before');
+                            $('#right-tab li:eq('+index+')').before($('#right-tab .poolHolder'+pool_id));
+                        } else {
+                            console.log('after');
+                            $('#right-tab li:eq('+index+')').after($('#right-tab .poolHolder'+pool_id));
+                        }
+
+                        $.ajax({
+                            url: {{link updatePool!}},
+                            data: {
+                                pool_id: pool_id,
+                                data: {
+                                    position: index +1
+                                }
+                            },
+                            success: function(answer) {
+
+                            }
+                        });
+                    }
+                }).disableSelection();
+
+
             }
 
             function autoCheck() {
@@ -267,11 +306,11 @@
                         $.ajax({
                             url: {{link autoCheck!}},
                             complete: function() {
-                                activeSortable( ".sortable" );
+                                activeSortable();
                             }
                         });
                     }
-                }, 1000);
+                }, 5000);
             }
         </script>
     {/snippet}
