@@ -18,8 +18,12 @@ $configurator->createRobotLoader()
 	->register();
 
 // Create Dependency Injection container from config.neon file
-$configurator->addConfig(__DIR__ . '/config/config.live.neon');
-$configurator->addConfig(__DIR__ . '/config/config.local.neon'); // none section
+if($configurator->isProductionMode()) {
+//    $configurator->addConfig(__DIR__ . '/config/config.neon');
+    $configurator->addConfig(__DIR__ . '/config/config.live.neon');
+} else {
+    $configurator->addConfig(__DIR__ . '/config/config.local.neon'); // none section
+}
 
 $configurator->onCompile[] = function ($configurator, $compiler) {
     $compiler->addExtension('dibi', new DibiNetteExtension);
