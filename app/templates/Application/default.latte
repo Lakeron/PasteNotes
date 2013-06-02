@@ -220,7 +220,7 @@
 
             function submitFormAndClear(form) {
                 form.submit();
-                $('input, textarea').val('');
+                $('textarea').val('');
             }
 
             function changeTask(task_id, pool_id, position) {
@@ -301,7 +301,7 @@
                             }
                         });
                     }
-                }, 5000);
+                }, 10000);
             }
 
             function sendRenameForm(form) {
