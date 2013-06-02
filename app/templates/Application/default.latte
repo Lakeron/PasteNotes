@@ -184,28 +184,11 @@
 
                 $('.editPoolName form').submit(function(e){
                     e.preventDefault();
+                    sendRenameForm($(this));
                 })
                 $("body").on('click', '.editPoolName .submit', function(e){
                     e.preventDefault();
-                    var form = $(this).parents('form');
-                    var pool_id = $('.editPoolName input[name="pool_id"]').val();
-                    var pool_name = $('.editPoolName input[name="name"]').val();
-
-                    $('.poolName'+pool_id).text(pool_name);
-                    $('.poolHolder'+pool_id).attr('data-name', pool_name);
-
-                    $.ajax({
-                        url: {{link updatePool!}},
-                        data: {
-                            pool_id: pool_id,
-                            data: {
-                                name: pool_name
-                            }
-                        },
-                        success: function(answer) {
-
-                        }
-                    });
+                    sendRenameForm($(this).parents('form'));
                 });
 
                 $("body").on('click', '.deletePool', function(e){
@@ -319,6 +302,27 @@
                         });
                     }
                 }, 5000);
+            }
+
+            function sendRenameForm(form) {
+                var pool_id = $('.editPoolName input[name="pool_id"]').val();
+                var pool_name = $('.editPoolName input[name="name"]').val();
+
+                $('.poolName'+pool_id).text(pool_name);
+                $('.poolHolder'+pool_id).attr('data-name', pool_name);
+
+                $.ajax({
+                    url: {{link updatePool!}},
+                    data: {
+                        pool_id: pool_id,
+                        data: {
+                            name: pool_name
+                        }
+                    },
+                    success: function(answer) {
+
+                    }
+                });
             }
         </script>
     {/snippet}
