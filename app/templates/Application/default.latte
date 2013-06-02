@@ -214,13 +214,16 @@
                     });
                 });
 
+                $('body').on('click', '#frmparser-save', function(){
+                    $('#frm-parser textarea').val('');
+                });
 
                 autoCheck();
             });
 
             function submitFormAndClear(form) {
                 form.submit();
-                $('textarea').val('');
+                $('#frm-parser textarea').val('');
             }
 
             function changeTask(task_id, pool_id, position) {
