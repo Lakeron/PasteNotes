@@ -159,6 +159,10 @@
                     }
                 });
 
+                if($('#right-tab li').length == 1) {
+                    $('.deletePool').remove();
+                }
+
                 $("body").on('click', '.change', function(e){
                     e.preventDefault();
                     changeTask( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
@@ -178,6 +182,9 @@
 
                 });
 
+                $('.editPoolName form').submit(function(e){
+                    e.preventDefault();
+                })
                 $("body").on('click', '.editPoolName .submit', function(e){
                     e.preventDefault();
                     var form = $(this).parents('form');
