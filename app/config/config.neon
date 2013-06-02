@@ -6,13 +6,23 @@
 #
 common:
 	parameters:
+		database:
+			driver: mysqli
+			host: localhost
+			socket: /tmp/mysql51.sock
+			dbname: pastenotes
+			database: pastenotes
+			user: pastenotes
+			password: &ofeywav9
 
 	dibi:
+		driver: mysqli
 		host: localhost
-		username: root
-		password:
-		database: test
-		lazy: TRUE
+		socket: /tmp/mysql51.sock
+		dbname: pastenotes
+		database: pastenotes
+		user: pastenotes
+		password: &ofeywav9
 
 	php:
 		date.timezone: Europe/Prague
@@ -23,9 +33,9 @@ common:
 			errorPresenter: Error
 
 		database:
-			dsn: 'mysql:host=localhost;dbname=test'
-			user:
-			password:
+			dsn: '%database.driver%:unix_socket=%database.host%;dbname=%database.dbname%'
+			user: %database.user%
+			password: %database.password%
 
 		session:
 			expiration: 14 days

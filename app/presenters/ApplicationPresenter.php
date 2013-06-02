@@ -48,10 +48,11 @@ class ApplicationPresenter extends BasePresenter {
 
         $form->addTextArea('text', '', 45, 2)
             ->addRule(\Nette\Forms\Form::FILLED, 'Please fill out ToDo list.')
-            ->getControlPrototype()->addAttributes(array('class' => 'span12', 'style' => 'max-width: 100%'))
+            ->getControlPrototype()->addAttributes(array('class' => 'span12'))
             ->setPlaceholder('Press Enter to add task');
 
-//        $form->addSubmit('save', 'Create');
+        $form->addSubmit('save', 'Add task')
+             ->getControlPrototype()->addAttributes(array('class' => 'span12 btn btn-success'));
 
         $form->onSuccess[] = callback($this, 'parseOnSubmit');
 
@@ -71,14 +72,24 @@ class ApplicationPresenter extends BasePresenter {
             $this->invalidateControl('defaultPools');
             $this->invalidateControl('userPools');
             $this->invalidateControl('script');
-            $this->context->model->saveNote($note->id, $note->pool_id, $data);
+            $this->context->model->saveTask($note->id, $note->pool_id, $data);
         }
     }
 
-    public function handleChangePool($task_id, $pool_id, $position = null) {
-        $this->context->model->changePool($task_id, $pool_id, $position);
+    public function handleChangeTask($task_id, $pool_id, $position = null) {
+        $this->context->model->changeTask($task_id, $pool_id, $position);
         $this->invalidateControl('defaultPools');
         $this->invalidateControl('userPools');
+    }
+
+    public function handleUpdatePool($pool_id, $data = array()) {
+        $this->context->model->updatePool($pool_id, $this->code, $data);
+        $this->invalidateControl('all');
+    }
+
+    public function handleDeletePool($pool_id) {
+        $this->context->model->deletePool($pool_id, $this->code);
+        $this->invalidateControl('all');
     }
 
     public function handleAddNewPool()

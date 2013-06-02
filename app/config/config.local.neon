@@ -1,15 +1,54 @@
-parameters:
+#
+# SECURITY WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+#
+# If you don't protect this directory from direct web access, anybody will be able to see your passwords.
+# http://nette.org/security-warning
+#
+common:
+	parameters:
+		database:
+			driver: mysql
+			host: 127.0.0.1
+			dbname: pastenotes
+			database: pastenotes
+			user: root
+			password:
 
-nette:
+	dibi:
+		driver: mysql
+		host: 127.0.0.1
+		dbname: pastenotes
+		database: pastenotes
+		user: root
+		password:
 
-services:
+	php:
+		date.timezone: Europe/Prague
+		# zlib.output_compression: yes
 
-factories:
+	nette:
+		application:
+			errorPresenter: Error
+
+		database:
+			dsn: '%database.driver%:host=%database.host%;dbname=%database.dbname%'
+			user: %database.user%
+			password: %database.password%
+
+		session:
+			expiration: 14 days
 
 
-dibi:
-	host: 127.0.0.1
-	username: root
-	password:
-	database: pastenotes
-	lazy: TRUE
+	services:
+		authenticator: Authenticator
+		routerFactory: RouterFactory
+		router: @routerFactory::createRouter
+		model: Model\BaseModel(@dibi.connection)
+
+
+	factories:
+
+
+production < common:
+
+development < common:

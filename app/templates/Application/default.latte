@@ -9,7 +9,7 @@
             <div class="row-fluid text-center">
                 <div class="btn-group" style="padding-bottom: 6px;">
                     <a href="{link addNewPool!}" class="ajax edit btn btn-success btn-small"><i class="icon-plus"></i> Add new pool</a>
-                    <a href="#" class="edit btn btn-small"><i class="icon-cog"></i> Manage pools</a>
+                    <a href="#managePools" class="edit btn btn-small openManagePools"><i class="icon-cog"></i> Manage pools</a>
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                         <div class="span6">
                             <ul class="nav nav-tabs" id="right-tab">
                                 {foreach $userPools as $pool}
-                                    <li><a href="#{$pool->webalized_name}">{$pool->name}</a></li>
+                                    <li class="poolHolder{$pool->id}"><a href="#{$pool->webalized_name}" class="poolName{$pool->id}">{$pool->name}</a></li>
                                 {/foreach}
                             </ul>
 
@@ -91,6 +91,45 @@
                                     {/foreach}
                                 {/snippet}
                             </div>
+
+                            <div id="managePools" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="managePoolsLabel" aria-hidden="true">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h3 id="managePoolsLabel">Manage pools</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row-fluid hide editPoolName">
+                                        <form class="form-inline">
+                                            <input type="hidden" name="pool_id"/>
+                                            <input type="text" name="name" value=""/>
+                                            <a href="#" class="btn btn-success submit">Edit</a>
+                                        </form>
+                                    </div>
+
+                                    <ul class="unstyled row-fluid">
+                                        {foreach $userPools as $pool}
+                                            <li class="row-fluid modal-item poolHolder{$pool->id}" data-name="{$pool->name}" data-pool-id="{$pool->id}">
+                                                <span class="span1 order">
+                                                    <i class="icon-reorder"></i>
+                                                </span>
+                                                <span class="span9 text poolName{$pool->id}">
+                                                    {$pool->name}
+                                                </span>
+                                                <span class="2 text-right">
+                                                    <div class="btn-group pull-right">
+                                                        <a href="#" class="btn btn-small btn-success editName"><i class="icon-pencil"></i></a>
+                                                        <a href="#" class="btn btn-small deletePool"><i class="icon-trash"></i></a>
+                                                    </div>
+                                                </span>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                </div>
+                            </div>
+
                             <script type="text/javascript" n:syntax="double">
                                 $(document).ready(function()
                                 {
@@ -122,8 +161,65 @@
 
                 $("body").on('click', '.change', function(e){
                     e.preventDefault();
-                    changePool( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
+                    changeTask( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
                 });
+
+                $("body").on('click', '.openManagePools', function(e){
+                    e.preventDefault();
+                    $('#managePools').modal('show');
+                });
+
+                $("body").on('click', '.editName', function(e){
+                    e.preventDefault();
+                    var item = $(this).parents('.modal-item');
+                    $('.editPoolName input[name="name"]').val(item.attr('data-name'));
+                    $('.editPoolName input[name="pool_id"]').val(item.attr('data-pool-id'));
+                    $('.editPoolName').show();
+
+                });
+
+                $("body").on('click', '.editPoolName .submit', function(e){
+                    e.preventDefault();
+                    var form = $(this).parents('form');
+                    var pool_id = $('.editPoolName input[name="pool_id"]').val();
+                    var pool_name = $('.editPoolName input[name="name"]').val();
+                    $.ajax({
+                        url: {{link updatePool!}},
+                        data: {
+                            pool_id: pool_id,
+                            data: {
+                                name: pool_name
+                            }
+                        },
+                        success: function(answer) {
+                            $('.poolName'+pool_id).text(pool_name);
+                        }
+                    });
+
+                });
+
+                $("body").on('click', '.deletePool', function(e){
+                    var item = $(this).parents('.modal-item');
+                    var pool_id = item.attr('data-pool-id');
+                    $.ajax({
+                        url: {{link deletePool!}},
+                        data: {
+                            pool_id: pool_id
+                        },
+                        success: function(answer) {
+                            $('.poolHolder'+pool_id).remove();
+                            if($('#right-tab li.active').length == 0) {
+                                $('#right-tab a:last').tab('show');
+                            }
+                            if($('#right-tab li').length == 1) {
+                                $('.deletePool').remove();
+                            }
+                        }
+                    });
+
+
+                });
+
 
                 autoCheck();
             });
@@ -133,9 +229,9 @@
                 $('input, textarea').val('');
             }
 
-            function changePool(task_id, pool_id, position) {
+            function changeTask(task_id, pool_id, position) {
                 $.ajax({
-                    url: {{link changePool!}},
+                    url: {{link changeTask!}},
                     data: {
                         task_id: task_id,
                         pool_id: pool_id,
@@ -156,7 +252,7 @@
                     },
                     stop: function( event, ui ) {
                         isDragging = false;
-                        changePool( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
+                        changeTask( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
                     }
                 }).disableSelection();
             }

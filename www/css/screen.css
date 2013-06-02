@@ -137,8 +137,19 @@ input[type="checkbox"] {
     font-weight: normal;
     cursor: move;
 }
+.modal-item {
+    border-top: 1px solid #E6E8E9;
+    color: #333333;
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    position: relative;
+    font-weight: normal;
+    cursor: move;
+    padding-top: 10px;
+}
 
-.item:first-child {
+.item:first-child, .modal-item:first-child {
     border-top: 0 none;
 }
 
@@ -167,4 +178,28 @@ input[type="checkbox"] {
 .parser textarea {
     width: 100%;
     resize: vertical;
+}
+
+#managePools .order{
+    margin-top: 5px;
+}
+
+#managePools .text{
+    margin-top: 4px;
+}
+
+#managePools [class*="span"]{
+    float: left;
+}
+
+#managePools .span1{
+    width: 5%;
+}
+
+#managePools .span9{
+    width: 75%;
+}
+
+#managePools .span2{
+    width: 10%;
 }
