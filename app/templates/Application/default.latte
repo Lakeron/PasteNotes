@@ -179,8 +179,16 @@
                     $('.editPoolName input[name="name"]').val(item.attr('data-name'));
                     $('.editPoolName input[name="pool_id"]').val(item.attr('data-pool-id'));
                     $('.editPoolName').show();
-
+                    $('.editPoolName input[name="name"]').focus().select();
                 });
+
+                $('.editPoolName').on('keyup', 'input[name="name"]', function(e){
+                    if(parseInt(e.keyCode) == 13) {
+                        sendRenameForm($(this).parents('form'));
+                    }
+                });
+
+
 
                 $('.editPoolName form').submit(function(e){
                     e.preventDefault();
@@ -215,7 +223,7 @@
                 });
 
                 $('body').on('click', '#frmparser-save', function(){
-                    $('#frm-parser textarea').val('');
+                    submitFormAndClear($(this).parents('form'));
                 });
 
                 autoCheck();
