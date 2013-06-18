@@ -1,0 +1,73 @@
+{**
+ * PasteNotes Application
+ *
+ * @author: Andrej Baran
+ *
+ *}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>{block title|striptags|upper}Quick Notes{/block}</title>
+
+	<meta charset="UTF-8">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+	<meta name="description" content="Quick notes for sharing with out login.">
+	<meta name="author" content="Andrej Baran">
+	<meta name="robots" content="NOINDEX, NOFOLLOW">
+
+	<link rel="stylesheet" href="{$basePath}/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="{$basePath}/bootstrap/css/responsive.css"/>
+	<link rel="stylesheet" href="{$basePath}/font-awesome/css/font-awesome.min.css"/>
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css">
+	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css">
+	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
+
+    <script type="text/javascript" src="{$basePath}/js/jquery.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquery.nette.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/jquery.livequery.js"></script>
+    <script type="text/javascript" src="{$basePath}/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{$basePath}/bootstrap/js/html5shiv.js"></script>
+    <script type="text/javascript" src="{$basePath}/js/main.js"></script>
+</head>
+
+<body>
+	<script> document.body.className+=' js' </script>
+
+	<div id="wrap">
+		<div class="container-fluid">
+			<div class="page-header">
+				<h5>Bookmark and share this link to collaborate <a href="/" class="pull-right"><i class="icon-long-arrow-left"></i> Home</a></h5>
+
+			</div>
+
+			{include #content}
+		</div>
+
+		<div id="push"></div>
+	</div>
+
+	<div id="footer">
+		<div class="container" style="position: relative;">
+			<p class="muted credit">Made with love of <a href="http://nette.org/en/">Nette</a> by <a href="https://twitter.com/AndrejBaran">@AndrejBaran</a>.</p>
+			<a href="mailto:lakeron@gmail.com?subject=PasteNotes comments" class="btn btn-success" style="position: absolute; top: 16px; right: 0;">Send feedback</a>
+		</div>
+	</div>
+
+    <script type="text/javascript" n:syntax="double">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-41410126-1', 'quicknotes.me');
+        ga('send', 'pageview');
+
+    </script>
+</body>
+</html>

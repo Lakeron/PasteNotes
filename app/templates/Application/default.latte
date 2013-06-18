@@ -1,340 +1,60 @@
 {block content}
-	<div class="row-fluid">
-		<div class="span2 parser">
-            <div class="span12">
-                {control parser}
-            </div>
-		</div>
-		<div class="span10">
-            <div class="row-fluid text-center">
-                <div class="btn-group" style="padding-bottom: 6px;">
-                    <a href="{link addNewPool!}" class="ajax edit btn btn-success btn-small"><i class="icon-plus"></i> Add new pool</a>
-                    <a href="#managePools" class="edit btn btn-small openManagePools"><i class="icon-cog"></i> Manage pools</a>
-                </div>
-            </div>
 
-            <div class="row-fluid">
-                {snippet all}
-                    <div class="{if count($userPools) == 0}span12{else}span6{/if}">
-                        <ul class="nav nav-tabs" id="left-tab">
-                            {foreach $defaultPools as $pool}
-                                <li><a href="#{$pool->webalized_name}">{$pool->name}</a></li>
-                            {/foreach}
-                        </ul>
+    <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="mailto:lakeron@gmail.com?subject=PasteNotes comments">Contact</a></li>
+        </ul>
+        <h3 class="muted">Quick notes</h3>
+    </div>
 
-                        <div class="tab-content">
-                            {snippet defaultPools}
-                                {foreach $defaultPools as $pool}
-                                    <div class="tab-pane" id="{$pool->webalized_name}">
-                                        {snippet pool-$pool->id}
-                                            <div class="sortable" data-pool-id="{$pool->id}">
-                                                {if $pool->tasks}
-                                                    {foreach $pool->tasks as $task}
-                                                        <div class="item" data-task-id="{$task->id}">
-                                                            {if $pool->isDone == 1}
-                                                                <input class="check change leftbtn" checked="checked" type="checkbox" data-pool-id="{$active->id}">
-                                                            {else}
-                                                                <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
-                                                            {/if}
-                                                            {$task->text}
-                                                            <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
-                                                        </div>
-                                                    {/foreach}
-                                                {/if}
-                                            </div>
-                                        {/snippet}
-                                    </div>
-                                {/foreach}
-                            {/snippet}
-                        </div>
-                        <script type="text/javascript" n:syntax="double">
-                            $(document).ready(function()
-                            {
-                                $('#left-tab a:last').tab('show');
-                                $('#left-tab a').click(function (e) {
-                                    e.preventDefault();
-                                    $(this).tab('show');
-                                });
-                            });
-                        </script>
-                    </div>
-                    {if count($userPools) > 0}
-                        <div class="span6">
-                            <ul class="nav nav-tabs" id="right-tab">
-                                {foreach $userPools as $pool}
-                                    <li class="poolHolder{$pool->id}"><a href="#{$pool->webalized_name}" class="poolName{$pool->id}">{$pool->name}</a></li>
-                                {/foreach}
-                            </ul>
+    <hr>
 
-                            <div class="tab-content">
-                                {snippet userPools}
-                                    {foreach $userPools as $pool}
-                                        <div class="tab-pane" id="{$pool->webalized_name}">
-                                            {snippet pool-$pool->id}
-                                                <div class="sortable" data-pool-id="{$pool->id}">
-                                                    {if $pool->tasks}
-                                                        {foreach $pool->tasks as $task}
-                                                            <div class="item" data-task-id="{$task->id}">
-                                                                {if $pool->isDone == 1}
-                                                                    <input class="check change leftbtn" checked="checked" type="checkbox" data-pool-id="{$active->id}">
-                                                                {else}
-                                                                    <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
-                                                                {/if}
-                                                                {$task->text}
-                                                                <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
-                                                            </div>
-                                                        {/foreach}
-                                                    {/if}
-                                                </div>
-                                            {/snippet}
-                                        </div>
-                                    {/foreach}
-                                {/snippet}
-                            </div>
+    <div class="jumbotron">
+        <h1>Sharing without login</h1>
+        <p class="lead">Quick notes is free web app for sharing task between people who needs to collaborate in real-time. The application has three basic pillars. <br/>Real-time collaboration, agility and speed.</p>
+        <a class="btn btn-large btn-success" href="{plink Code:default}">Try it now</a>
+    </div>
 
-                            <div id="managePools" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="managePoolsLabel" aria-hidden="true">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    <h3 id="managePoolsLabel">Manage pools</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row-fluid hide editPoolName">
-                                        <form class="form-inline">
-                                            <input type="hidden" name="pool_id"/>
-                                            <input type="text" name="name" value=""/>
-                                            <a href="#" class="btn btn-success submit">Edit</a>
-                                        </form>
-                                    </div>
+    <hr>
 
-                                    <ul class="unstyled sortablePools row-fluid">
-                                        {foreach $userPools as $pool}
-                                            <li class="row-fluid modal-item poolHolder{$pool->id}" data-name="{$pool->name}" data-pool-id="{$pool->id}">
-                                                <span class="span1 order hidden-phone">
-                                                    <i class="icon-reorder"></i>
-                                                </span>
-                                                <span class="span9 text poolName{$pool->id}">
-                                                    {$pool->name}
-                                                </span>
-                                                <span class="2 text-right">
-                                                    <div class="btn-group pull-right">
-                                                        <a href="#" class="btn btn-small btn-success editName"><i class="icon-pencil"></i></a>
-                                                        <a href="#" class="btn btn-small deletePool"><i class="icon-trash"></i></a>
-                                                    </div>
-                                                </span>
-                                            </li>
-                                        {/foreach}
-                                    </ul>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                                </div>
-                            </div>
+    <div class="row-fluid marketing">
+        <div class="span6">
+            <h4>Collaboration</h4>
+            <p>All task are in one active pool. Each other can take task, make it and mark as done. Leader can check if task is done and remove it or reopen into active pool.</p>
+        </div>
 
-                            <script type="text/javascript" n:syntax="double">
-                                $(document).ready(function()
-                                {
-                                    $('#right-tab a:last').tab('show');
-                                    $('#right-tab a').click(function (e) {
-                                        e.preventDefault();
-                                        $(this).tab('show');
-                                    });
-                                });
-                            </script>
-                        </div>
-                    {/if}
-                </div>
-            {/snippet}
-		</div>
-	</div>
-    {snippet script}
-        <script type="text/javascript" n:syntax="double">
-            var isDragging = false;
-            $(document).ready(function()
-            {
-                activeSortable( ".sortable" );
+        <div class="span6">
+            <a href="#">
+                <img src="{$basePath}/images/drag-task.png" alt="drag task" class="img-polaroid img-rounded"/>
+            </a>
+        </div>
+    </div>
 
-                $('.parser form').keyup(function(e){
-                    if(parseInt(e.keyCode) == 13) {
-                        submitFormAndClear($(this));
-                    }
-                });
+    <div class="row-fluid marketing">
+        <div class="span6">
+            <h4>Set priorities</h4>
+            <p>You or your leader can sort tasks by priority from most important to less important. Every time you check the list know what needs to be done as follows.</p>
+        </div>
 
-                if($('#right-tab li').length == 1) {
-                    $('.deletePool').remove();
-                }
+        <div class="span6">
+            <a href="#">
+                <img src="{$basePath}/images/order-task.png" alt="order task" class="img-polaroid img-rounded"/>
+            </a>
+        </div>
+    </div>
 
-                $("body").on('click', '.change', function(e){
-                    e.preventDefault();
-                    changeTask( $(this).parents('.item').attr('data-task-id'), $(this).attr('data-pool-id'), 1 );
-                });
+    <div class="row-fluid marketing">
+        <div class="span6">
+            <h4>Build team</h4>
+            <p>You can add pools as much as you need. Each pool can represent member of team or group of related items. </p>
+        </div>
 
-                $("body").on('click', '.openManagePools', function(e){
-                    e.preventDefault();
-                    $('#managePools').modal('show');
-                });
+        <div class="span6">
+            <a href="#">
+                <img src="{$basePath}/images/build-team.png" alt="build team" class="img-polaroid img-rounded"/>
+            </a>
+        </div>
+    </div>
 
-                $("body").on('click', '.editName', function(e){
-                    e.preventDefault();
-                    var item = $(this).parents('.modal-item');
-                    $('.editPoolName input[name="name"]').val(item.attr('data-name'));
-                    $('.editPoolName input[name="pool_id"]').val(item.attr('data-pool-id'));
-                    $('.editPoolName').show();
-                    $('.editPoolName input[name="name"]').focus().select();
-                });
-
-                $('.editPoolName').on('keyup', 'input[name="name"]', function(e){
-                    if(parseInt(e.keyCode) == 13) {
-                        sendRenameForm($(this).parents('form'));
-                    }
-                });
-
-
-
-                $('.editPoolName form').submit(function(e){
-                    e.preventDefault();
-                    sendRenameForm($(this));
-                })
-                $("body").on('click', '.editPoolName .submit', function(e){
-                    e.preventDefault();
-                    sendRenameForm($(this).parents('form'));
-                });
-
-                $("body").on('click', '.deletePool', function(e){
-                    var item = $(this).parents('.modal-item');
-                    var pool_id = item.attr('data-pool-id');
-
-                    $('.poolHolder'+pool_id).remove();
-                    if($('#right-tab li.active').length == 0) {
-                        $('#right-tab a:last').tab('show');
-                    }
-                    if($('#right-tab li').length == 1) {
-                        $('.deletePool').remove();
-                    }
-
-                    $.ajax({
-                        url: {{link deletePool!}},
-                        data: {
-                            pool_id: pool_id
-                        },
-                        success: function(answer) {
-
-                        }
-                    });
-                });
-
-                $('body').on('click', '#frmparser-save', function(){
-                    submitFormAndClear($(this).parents('form'));
-                });
-
-                autoCheck();
-            });
-
-            function submitFormAndClear(form) {
-                form.submit();
-                $('#frm-parser textarea').val('');
-            }
-
-            function changeTask(task_id, pool_id, position) {
-                $.ajax({
-                    url: {{link changeTask!}},
-                    data: {
-                        task_id: task_id,
-                        pool_id: pool_id,
-                        position: position
-                    },
-                    complete: function() {
-                        activeSortable( ".sortable" );
-                    }
-                });
-            }
-
-            function activeSortable()
-            {
-                $( '.sortable' ).sortable({
-                    connectWith: '.sortable',
-                    start: function(){
-                        isDragging = true;
-                    },
-                    stop: function( event, ui ) {
-                        isDragging = false;
-                        changeTask( ui.item.attr('data-task-id'), ui.item.parents('.sortable').attr('data-pool-id'), ui.item.index()+1);
-                    }
-                }).disableSelection();
-
-                $( '.sortablePools' ).sortable({
-                    connectWith: '.sortablePools',
-                    start: function(){
-                        isDragging = true;
-                    },
-                    stop: function( event, ui ) {
-                        isDragging = false;
-                        var pool_id = ui.item.attr('data-pool-id');
-                        var index = ui.item.index();
-                        var old_index = $('#right-tab .poolHolder'+pool_id).index();
-
-                        if(index < old_index) {
-                            console.log('before');
-                            $('#right-tab li:eq('+index+')').before($('#right-tab .poolHolder'+pool_id));
-                        } else {
-                            console.log('after');
-                            $('#right-tab li:eq('+index+')').after($('#right-tab .poolHolder'+pool_id));
-                        }
-
-                        $.ajax({
-                            url: {{link updatePool!}},
-                            data: {
-                                pool_id: pool_id,
-                                data: {
-                                    position: index +1
-                                }
-                            },
-                            success: function(answer) {
-
-                            }
-                        });
-                    }
-                }).disableSelection();
-
-
-            }
-
-            function autoCheck() {
-
-                setTimeout(function()
-                {
-                    autoCheck();
-                    if(!isDragging)
-                    {
-                        $.ajax({
-                            url: {{link autoCheck!}},
-                            complete: function() {
-                                activeSortable();
-                            }
-                        });
-                    }
-                }, 10000);
-            }
-
-            function sendRenameForm(form) {
-                var pool_id = $('.editPoolName input[name="pool_id"]').val();
-                var pool_name = $('.editPoolName input[name="name"]').val();
-
-                $('.poolName'+pool_id).text(pool_name);
-                $('.poolHolder'+pool_id).attr('data-name', pool_name);
-
-                $.ajax({
-                    url: {{link updatePool!}},
-                    data: {
-                        pool_id: pool_id,
-                        data: {
-                            name: pool_name
-                        }
-                    },
-                    success: function(answer) {
-
-                    }
-                });
-            }
-        </script>
-    {/snippet}
 {/block}
