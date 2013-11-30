@@ -1,11 +1,11 @@
 {block content}
-	<div class="row-fluid">
-		<div class="span2 parser">
+    <div class="row-fluid">
+        <div class="span2 parser">
             <div class="span12">
                 {control parser}
             </div>
-		</div>
-		<div class="span10">
+        </div>
+        <div class="span10">
             <div class="row-fluid text-center">
                 <div class="btn-group" style="padding-bottom: 6px;">
                     <a href="{link addNewPool!}" class="ajax edit btn btn-success btn-small"><i class="icon-plus"></i> Add new pool</a>
@@ -31,12 +31,14 @@
                                                 {if $pool->tasks}
                                                     {foreach $pool->tasks as $task}
                                                         <div class="item" data-task-id="{$task->id}">
+                                                            <span class="move"><i class="icon-reorder"></i></span>
                                                             {if $pool->isDone == 1}
                                                                 <input class="check change leftbtn" checked="checked" type="checkbox" data-pool-id="{$active->id}">
                                                             {else}
                                                                 <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
                                                             {/if}
                                                             {$task->text}
+
                                                             <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
                                                         </div>
                                                     {/foreach}
@@ -62,7 +64,7 @@
                         <div class="span6">
                             <ul class="nav nav-tabs" id="right-tab">
                                 {foreach $userPools as $pool}
-                                    <li class="poolHolder{$pool->id}"><a href="#{$pool->webalized_name}" class="poolName{$pool->id}">{$pool->name}</a></li>
+                                    <li class="poolHolder{$pool->id}"><a href="#{$pool->webalized_name}" class="poolName{$pool->id}">{$pool->name}{$pool->position}</a></li>
                                 {/foreach}
                             </ul>
 
@@ -81,6 +83,7 @@
                                                                     <input class="check change leftbtn" type="checkbox" data-pool-id="{$done->id}">
                                                                 {/if}
                                                                 {$task->text}
+                                                                <span class="move"><i class="icon-reorder"></i></span>
                                                                 <a href="#" class="delete change rightbtn" data-pool-id="{$deleted->id}"><i class="icon-trash"></i></a>
                                                             </div>
                                                         {/foreach}
@@ -109,7 +112,7 @@
                                     <ul class="unstyled sortablePools row-fluid">
                                         {foreach $userPools as $pool}
                                             <li class="row-fluid modal-item poolHolder{$pool->id}" data-name="{$pool->name}" data-pool-id="{$pool->id}">
-                                                <span class="span1 order hidden-phone">
+                                                <span class="move span1 order hidden-phone">
                                                     <i class="icon-reorder"></i>
                                                 </span>
                                                 <span class="span9 text poolName{$pool->id}">
@@ -144,8 +147,8 @@
                     {/if}
                 </div>
             {/snippet}
-		</div>
-	</div>
+        </div>
+    </div>
     {snippet script}
         <script type="text/javascript" n:syntax="double">
             var isDragging = false;
@@ -253,6 +256,7 @@
             function activeSortable()
             {
                 $( '.sortable' ).sortable({
+                    handle: 'span.move',
                     connectWith: '.sortable',
                     start: function(){
                         isDragging = true;
@@ -264,6 +268,7 @@
                 }).disableSelection();
 
                 $( '.sortablePools' ).sortable({
+                    handle: 'span.move',
                     connectWith: '.sortablePools',
                     start: function(){
                         isDragging = true;
