@@ -52,6 +52,7 @@ CREATE TABLE `pools` (
   `isDeleted` tinyint(4) DEFAULT '0',
   `isDone` tinyint(4) DEFAULT '0',
   `isActive` tinyint(4) DEFAULT '0',
+  `position` INT UNSIGNED NULL,
   PRIMARY KEY (`id`),
   KEY `note_id` (`note_id`),
   CONSTRAINT `pools_ibfk_1` FOREIGN KEY (`note_id`) REFERENCES `notes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
